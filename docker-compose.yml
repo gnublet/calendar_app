@@ -13,6 +13,25 @@ services:
     volumes:
       - postgres_data_calendar:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: calendar_app
+    ports:
+      - "8000:8000" # TODO: use env vars
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASS}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES}
+      VERSION: ${VERSION}
+    volumes:
+      - .:/app
 volumes:
   postgres_data_calendar:
 
