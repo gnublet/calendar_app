@@ -1,5 +1,5 @@
 # Calendar App
-![Github Action](https://github.com/gnublet/calendar_app/workflows/test/badge.svg)
+![CI](https://github.com/gnublet/calendar_app/actions/workflows/test.yaml/badge.svg)
 
 ## Setup
 Copy `.env.test` as `.env` and customize your environment variables as desired, then choose your preferred method from the choices below:
