@@ -1,53 +1,22 @@
 # Calendar App
+![logo](./assets/cal_logo_small.jpeg)
+
+A simple crud app for a calendar api.
 ![CI](https://github.com/gnublet/calendar_app/actions/workflows/test.yaml/badge.svg)
 
 ## Setup
-Copy `.env.test` as `.env` and customize your environment variables as desired, then choose your preferred method from the choices below:
+Copy `.env.test` as `.env` and customize your environment variables as desired, then choose your preferred method:
 
-### With docker compose
-```
-docker compose up
-```
-
-### Without docker
-(Optional) Create a virtual environment
-```
-python -m venv .venv
-```
-Install python packages
-```
-pip install -r requirements/base.txt
-pip install -r requirements/test.txt
-```
-
-Set up a postgres database through a method of your choice
-Create alembic environment
-```
-alembic init alembic
-```
-Start migrations
-```
-alembic upgrade head
-```
-To run:
-```
-fastapi run app/main.py --port 8000
-```
+- [From scratch](./docs/setup/scratch.md)
+- [Docker-compose](./docs/setup/docker-compose.md)
+- [Kubernetes](./docs/setup/kubernetes.md)
+- [Terraform/OpenTofu](./docs/setup/terraform.md) 
 
 
-For tests to work, we create a setup.py file and install in development mode:
-```
-pip install -e .
-```
-then run 
-```
-pytest -v tests
-```
+### If you're using Kubernetes
+Assuming you have Kubernetes installed
 
-### With kubernetes
-Assuming you have Kubernetes installed (If you don't, you can use [k3s](https://docs.k3s.io/quick-start))
-
-Install CloudNativePG
+Install CloudNativePG which supports the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture:
 ```
 kubectl apply --server-side -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml
@@ -58,12 +27,9 @@ Install Atlas for kubernetes based database migrations
 helm install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator
 ```
 
-Then install the kubernetes manifests
-```
-kubectl apply -f terraform/manifests/.
-```
-
 ## Contributing
+TODO: just put this in github actions for convenience: 
+
 To build and push to a github container registry, first get a [PAT token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) from Github
 ```
 export CR_PAT=YOUR_TOKEN
