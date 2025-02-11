@@ -1,0 +1,113 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-cluster
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2
+  storage:
+    size: 1Gi
+  managed:
+    services:
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: cluster-example-rw-lb
+          spec:
+            type: LoadBalancer
+
+
+  superuserSecret:
+    name: postgres-superuser-secret
+  bootstrap:
+    initdb:
+      database: calendar_db
+      owner: app # cannot be "postgres"
+      secret:
+        name: postgres-secret
+  # service:
+  #   type: LoadBalancer
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: postgres-secret
+# type: Opaque
+# stringData:
+#   username: postgres
+#   password: password
+---
+apiVersion: v1
+data:
+  username: YXBw # cannot be base64 encoded version of "postgres"
+  password: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: postgres-secret
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+data:
+  username: YXBw
+  password: cGFzc3dvcmQ=
+kind: Secret
+metadata:
+  name: postgres-superuser-secret
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+type: Opaque
+stringData:
+  url: "postgres://app:password@pg-cluster-rw:5432/calendar_db?sslmode=disable&search_path=public"
+  # url: "postgres://postgres:password@pg-cluster-rw:5432/calendar_db?sslmode=disable&search_path=public"
+---
+apiVersion: db.atlasgo.io/v1alpha1
+kind: AtlasSchema
+metadata:
+  name: atlasschema-pg
+spec:
+  urlFrom:
+    secretKeyRef:
+      key: url
+      name: postgres-credentials
+  schema:
+    sql: |
+       CREATE TABLE public.users (
+          id serial4 NOT NULL,
+          email varchar NOT NULL,
+          hashed_password varchar NOT NULL,
+          is_active bool DEFAULT true NOT NULL,
+          created_at timestamptz DEFAULT now() NULL,
+          CONSTRAINT users_pkey PRIMARY KEY (id)
+        );
+        CREATE UNIQUE INDEX ix_users_email ON public.users USING btree (email);
+        CREATE INDEX ix_users_id ON public.users USING btree (id);
+
+
+        CREATE TABLE public.events (
+          id serial4 NOT NULL,
+          title varchar NOT NULL,
+          description varchar NULL,
+          start_time timestamp NOT NULL,
+          end_time timestamp NOT NULL,
+          user_id int4 NOT NULL,
+          CONSTRAINT events_pkey PRIMARY KEY (id),
+          CONSTRAINT events_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+        );
+
+
+        CREATE TABLE public.oauth2_clients (
+          id serial4 NOT NULL,
+          client_id varchar NOT NULL,
+          client_secret varchar NOT NULL,
+          redirect_uri varchar NOT NULL,
+          user_id int4 NOT NULL,
+          CONSTRAINT oauth2_clients_pkey PRIMARY KEY (id),
+          CONSTRAINT oauth2_clients_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
+        );
+        CREATE UNIQUE INDEX ix_oauth2_clients_client_id ON public.oauth2_clients USING btree (client_id);
+        CREATE INDEX ix_oauth2_clients_id ON public.oauth2_clients USING btree (id);

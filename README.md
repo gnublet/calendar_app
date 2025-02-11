@@ -45,15 +45,18 @@ pytest -v tests
 ```
 
 ### With kubernetes
-Assuming you have kubernetes installed (If you don't, you can use [k3s](https://docs.k3s.io/quick-start))
+Assuming you have Kubernetes installed (If you don't, you can use [k3s](https://docs.k3s.io/quick-start))
+
 Install CloudNativePG
 ```
 kubectl apply --server-side -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml
-
 ```
 
-TODO: [Init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) for migrations
+Install Atlas for kubernetes based database migrations
+```
+helm install atlas-operator oci://ghcr.io/ariga/charts/atlas-operator
+```
 
 Then install the kubernetes manifests
 ```
@@ -73,3 +76,4 @@ docker push ghcr.io/gnublet/calendar_app:0.1
 ```
 
 And you can view the user's packages here: https://github.com/gnublet?tab=packages
+If you want to share it, you have to make the package public (it's private by default)

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: ghcr.io/gnublet/calendar_app:0.1
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://app:password@pg-cluster-rw:5432/calendar_db"
+          ports:
+            - containerPort: 8000
