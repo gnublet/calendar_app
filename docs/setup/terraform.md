@@ -26,6 +26,8 @@ Apply the changes, executing the proposed actions:
 tofu apply
 ```
 
+Then you can check the external-ip of the fastapi-service (using `kubectl get svc fastapi-service`). For example, if it's `192.168.0.170`, to see the app, go to `192.168.0.170:8000/docs`
+
 If you're done and want to clear everything:
 ```
 tofu destroy

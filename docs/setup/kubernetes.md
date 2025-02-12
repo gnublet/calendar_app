@@ -22,3 +22,11 @@ Then install the kubernetes manifests
 ```
 kubectl apply -f iac/kubernetes/.
 ```
+
+
+Then you can check the external-ip of the fastapi-service (using `kubectl get svc fastapi-service`). For example, if it's `192.168.0.170`, to see the app, go to `192.168.0.170:8000/docs`
+
+If you're done, you can delete everything
+```
+kubectl delete -f iac/kubernetes/.
+```
