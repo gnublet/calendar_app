@@ -39,7 +39,7 @@ Python's `venv` was used (instead of something like poetry) since it's part of t
 ```
 
 ## Database Schema
-[!ERDiagram](/assets/erdiagram.png)
+![ERDiagram](/assets/erdiagram.png)
 
 ## Kubernetes 
 We use Kubernetes to allow for convenient management and scalability.
