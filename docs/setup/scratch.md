@@ -3,13 +3,28 @@
 ```
 python -m venv .venv
 ```
+
+Activate the virtual environment
+
+On Linux:
+```
+source .venv/bin/activate
+```
+
+On Windows:
+```
+.venv\Scripts\activate.ps1
+```
+
 Install python packages
 ```
 pip install -r requirements/base.txt
 pip install -r requirements/test.txt
 ```
 
-Set up a postgres database through a method of your choice
+Set up a postgres database through a method of your choice (from scratch, docker, docker compose, or kubernetes)
+If you want to do it from scratch, [download and it](https://www.postgresql.org/download/)
+
 Create alembic environment
 ```
 alembic init alembic
