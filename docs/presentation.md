@@ -16,8 +16,30 @@ Alembic for database migrations (if you don't want to use Kubernetes) which allo
 Python's `venv` was used (instead of something like poetry) since it's part of the standard library and still the most common way of managing packages
 
 ## Directory Structure
+```
+.
+├── alembic
+│   └── versions
+├── app
+│   ├── api
+│   │   └── v1
+│   │       └── endpoints
+│   ├── crud
+│   ├── models
+│   └── schemas
+├── assets
+├── docs
+│   └── setup
+├── iac
+│   ├── kubernetes
+│   ├── tf
+│   └── vendor_clouds
+├── requirements
+└── tests
+```
 
 ## Database Schema
+[!ERDiagram](/assets/erdiagram.png)
 
 ## Kubernetes 
 We use Kubernetes to allow for convenient management and scalability.
